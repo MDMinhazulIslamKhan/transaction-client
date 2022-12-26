@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { Container } from '@mui/system';
+import { useEffect, useState } from 'react';
+import AppBar from './Components/AppBar';
+import TransactionList from './Components/TransactionList';
+import TransactionsForm from './Components/Transactions';
 
 function App() {
+  const [data, setData] = useState([]);
+  const [editData, setEditData] = useState(null);
+  useEffect(() => {
+    fetchTransaction();
+  }, [])
+
+
+  const fetchTransaction = async () => {
+    const res = await fetch('http://localhost:5000/transaction');
+    const data = await res.json();
+    setData(data)
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AppBar />
+      <Container>
+        <TransactionsForm setData={setData} editData={editData} fetchTransaction={fetchTransaction} setEditData={setEditData} />
+        <TransactionList data={data} fetchTransaction={fetchTransaction} setEditData={setEditData} />
+      </Container>
     </div>
   );
 }
